@@ -1,8 +1,7 @@
 # Import StreamController modules
 from src.backend.PluginManager.PluginBase import PluginBase
 from src.backend.PluginManager.ActionHolder import ActionHolder
-from src.backend.DeckManagement.InputIdentifier import Input
-from src.backend.PluginManager.ActionInputSupport import ActionInputSupport
+
 
 # Import actions
 from .actions.SetOutput.SetOutput import SetOutput
@@ -18,26 +17,16 @@ class AudioSwitcher(PluginBase):
         self.set_output_holder = ActionHolder(
             plugin_base = self,
             action_base = SetOutput,
-            action_id_suffix = "SetOutput", # Change this to your own plugin id
-            action_name = self.lm.get("actions.set-output.name"),
-            action_support={
-                Input.Key: ActionInputSupport.SUPPORTED,
-                Input.Dial: ActionInputSupport.SUPPORTED,
-                Input.Touchscreen: ActionInputSupport.UNTESTED
-            }
+            action_id = "com_core447_AudioSwitcher::SetOutput", # Change this to your own plugin id
+            action_name = self.lm.get("actions.set-output.name")
         )
         self.add_action_holder(self.set_output_holder)
 
         self.toggle_output_holder = ActionHolder(
             plugin_base = self,
             action_base = ToggleOutput,
-            action_id_suffix = "ToggleOutput", # Change this to your own plugin id
-            action_name = self.lm.get("actions.toggle-output.name"),
-            action_support={
-                Input.Key: ActionInputSupport.SUPPORTED,
-                Input.Dial: ActionInputSupport.SUPPORTED,
-                Input.Touchscreen: ActionInputSupport.UNTESTED
-            }
+            action_id = "com_core447_AudioSwitcher::ToggleOutput", # Change this to your own plugin id
+            action_name = self.lm.get("actions.toggle-output.name")
         )
         self.add_action_holder(self.toggle_output_holder)
 
