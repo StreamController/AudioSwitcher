@@ -20,8 +20,22 @@ class SetOutput(ActionBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.old_state: int = None
+
     def on_ready(self):
-        self.set_media(media_path=os.path.join(self.plugin_base.PATH, "assets", "speaker.png"), size=0.75)
+        self.old_state = None
+        self.show_state()
+
+    def show_state(self) -> None:
+        new_state = self.get_active_sink()
+        if new_state == self.old_state:
+            return
+        self.old_state = new_state
+
+        if new_state == -1:
+            self.set_media(media_path=os.path.join(self.plugin_base.PATH, "assets", "speaker.png"), size=0.75)
+        else:
+            self.set_media(media_path=os.path.join(self.plugin_base.PATH, "assets", "disabled.png"), size=0.75)
 
     def get_config_rows(self) -> list:
         self.device_model = Gtk.ListStore.new([str]) # First Column: Name,
@@ -67,6 +81,20 @@ class SetOutput(ActionBase):
         settings["device"] = name
         self.set_settings(settings)
 
+    def get_active_sink(self) -> int:
+        settings = self.get_settings()
+        device = settings.get("device")
+
+
+        with pulsectl.Pulse('set-output') as pulse:
+            default_sink = pulse.sink_default_get()
+            for sink in pulse.sink_list():
+                name = self.get_sink_identifier(sink)
+                if name == device and sink.index == default_sink.index:
+                    return -1
+
+        return 0
+
     def on_key_down(self):
         settings = self.get_settings()
         device_name = settings.get("device")
@@ -81,6 +109,11 @@ class SetOutput(ActionBase):
                 if name == device_name:
                     pulse.default_set(sink)
                     break
+
+        self.show_state()
+
+    def on_tick(self):
+        self.show_state()
 
     def get_display_name(self, sink) -> str:
         proplist = sink.proplist
