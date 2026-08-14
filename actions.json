@@ -1,0 +1,52 @@
+{
+    "plugin": {
+        "description": "Switches the default audio output between devices - speakers, headphones, HDMI - from a key.",
+        "requirements": "PulseAudio or PipeWire with the PulseAudio interface."
+    },
+    "actions": {
+        "SetOutput": {
+            "description": "Makes one device the default audio output. The key shows whether that device is the current output. Use one key per device when several outputs should be reachable directly.",
+            "settings": {
+                "device": {
+                    "type": "string",
+                    "required": true,
+                    "description": "The output device, by its PulseAudio node name.",
+                    "example": "alsa_output.pci-0000_00_1f.3.analog-stereo"
+                },
+                "port": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Port of that device, for cards that have several (headphone jack vs line out). Empty just switches the device.",
+                    "example": "analog-output-headphones"
+                }
+            }
+        },
+        "ToggleOutput": {
+            "description": "Switches back and forth between two output devices with one key - the usual speakers/headphones toggle. The key shows which of the two is active.",
+            "settings": {
+                "device_a": {
+                    "type": "string",
+                    "required": true,
+                    "description": "First output device, by its PulseAudio node name. Shown as speakers on the key.",
+                    "example": "alsa_output.pci-0000_00_1f.3.analog-stereo"
+                },
+                "device_a_port": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Port of the first device, if it has several."
+                },
+                "device_b": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Second output device, by its PulseAudio node name. Shown as headphones on the key.",
+                    "example": "alsa_output.usb-Generic_USB_Audio-00.analog-stereo"
+                },
+                "device_b_port": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Port of the second device, if it has several."
+                }
+            }
+        }
+    }
+}
